@@ -1,0 +1,87 @@
+# ==============================================================================
+# MODEL CATALOG - 數值模式資料
+# ==============================================================================
+# 包含各種數值天氣/氣候模式輸出
+# ==============================================================================
+
+metadata:
+  version: 1
+  catalog_type: "model"
+  institution: "Local Research Institute"
+  
+sources:
+  wrf_forecast:
+    description: |
+      WRF 高解析度天氣預報
+      - 模式: WRF v4.5
+      - 水平解析度: 3km
+      - 垂直層數: 50層
+      - 預報時間: 72小時
+      - 初始化: 每日00,12UTC
+    
+    driver: netcdf
+    args:
+      urlpath: "/path/to/wrf/forecast/{year}/{month}/{day}/wrfout_d01_{year}-{month:02d}-{day:02d}_{hour:02d}.nc"
+      urlpath_template: "{{urlpath}}"
+      
+    parameters:
+      year:
+        description: "年份"
+        type: int
+        min: 2020
+        max: 2024
+      month:
+        description: "月份"
+        type: int
+        min: 1
+        max: 12
+      day:
+        description: "日期"
+        type: int
+        min: 1
+        max: 31
+      hour:
+        description: "初始化時間(UTC)"
+        type: int
+        allowed: [0, 12]
+    
+    metadata:
+      tags: ["model", "wrf", "forecast", "high_resolution"]
+      data_type: "gridded"
+      
+  gfs_analysis:
+    description: |
+      GFS 全球分析場
+      - 模式: GFS
+      - 水平解析度: 0.25度
+      - 更新頻率: 每6小時
+      - 資料範圍: 全球
+    
+    driver: netcdf
+    args:
+      urlpath: "/path/to/gfs/analysis/gfs.{year}{month:02d}{day:02d}{hour:02d}.nc"
+      
+    parameters:
+      year:
+        description: "年份"
+        type: int
+        min: 2020
+        max: 2024
+      month:
+        description: "月份"
+        type: int
+        min: 1
+        max: 12
+      day:
+        description: "日期"
+        type: int
+        min: 1
+        max: 31
+      hour:
+        description: "分析時間(UTC)"
+        type: int
+        allowed: [0, 6, 12, 18]
+    
+    metadata:
+      tags: ["model", "gfs", "analysis", "global"]
+      data_type: "gridded"

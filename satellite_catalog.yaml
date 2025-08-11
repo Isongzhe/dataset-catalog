@@ -1,0 +1,42 @@
+# ==============================================================================
+# SATELLITE CATALOG - 衛星資料
+# ==============================================================================
+# 包含各種衛星觀測資料
+# ==============================================================================
+
+metadata:
+  version: 1
+  catalog_type: "satellite"
+  institution: "Local Research Institute"
+  
+sources:
+  himawari8_ir:
+    description: |
+      向日葵8號紅外線影像
+      - 頻道: IR1 (10.4 μm)
+      - 空間解析度: 2km
+      - 時間解析度: 10分鐘
+      - 範圍: 東亞地區
+    
+    driver: zarr
+    args:
+      urlpath: "/path/to/himawari8/ir/*.zarr"
+    
+    metadata:
+      tags: ["satellite", "himawari8", "infrared"]
+      data_type: "gridded"
+      
+  modis_terra:
+    description: |
+      MODIS Terra 陸地產品
+      - 產品: MOD11A1 (地表溫度)
+      - 空間解析度: 1km
+      - 時間解析度: 每日
+    
+    driver: netcdf
+    args:
+      urlpath: "/path/to/modis/terra/*.nc"
+    
+    metadata:
+      tags: ["satellite", "modis", "land_surface"]
+      data_type: "gridded"

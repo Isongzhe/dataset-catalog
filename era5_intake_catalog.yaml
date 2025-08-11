@@ -1,0 +1,147 @@
+# ==============================================================================
+# INTAKE CATALOG FOR ERA5 REANALYSIS DATASETS
+# ==============================================================================
+# This catalog provides standardized access to ERA5 reanalysis data following
+# the Analysis-Ready, Cloud Optimized (ARCO) ERA5 format principles.
+# Based on: https://github.com/google-research/arco-era5
+#
+# Template Version: 1.0
+# Last Updated: August 2025
+# ==============================================================================
+
+metadata:
+  version: 1
+  catalog_type: "era5_reanalysis"
+  institution: "Local Research Institute"
+  license: "Copernicus Climate Change Service (C3S)"
+  citation: |
+    Carver, Robert W, and Merose, Alex. (2023):
+    ARCO-ERA5: An Analysis-Ready Cloud-Optimized Reanalysis Dataset.
+    22nd Conf. on AI for Env. Science, Denver, CO, Amer. Meteo. Soc, 4A.1,
+    https://ams.confex.com/ams/103ANNUAL/meetingapp.cgi/Paper/415842
+  references:
+    - "https://github.com/google-research/arco-era5"
+    - "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels"
+    - "https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels"
+
+sources:
+  era5_hourly_global:
+    description: |
+      ERA5 hourly global reanalysis data focusing on convection-related variables.
+      
+      This dataset contains 8 years (2017-2024) of hourly ERA5 reanalysis data
+      regridded to a uniform 0.25° equiangular horizontal resolution following
+      the ARCO ERA5 analysis-ready format principles.
+      
+      Spatial Coverage:
+      - Latitude: 60°N to 60°S (481 grid points)
+      - Longitude: 0° to 359.75°E (1440 grid points) 
+      - Horizontal Resolution: 0.25° * 0.25°
+      
+      Temporal Coverage:
+      - Period: 2017-01-01 to 2024-12-31
+      - Frequency: Hourly (00:00 to 23:00 UTC)
+      - Total Time Steps: ~70,128 hours
+      
+      Vertical Levels:
+      - Pressure Levels: 300, 500, 700, 850 hPa (4 levels)
+      - Surface Level: Single level variables
+      
+      Variables (17 total):
+      Surface Variables:
+      - 100m/10m u/v components of wind
+      - Boundary layer height
+      - Convective available potential energy (CAPE)
+      - Surface pressure
+      - Total precipitation
+      
+      Pressure Level Variables:
+      - Temperature
+      - Specific humidity  
+      - u/v components of wind
+      - And additional convection-related parameters
+      
+      Data Format: Zarr with Dask chunking for efficient parallel processing
+      Estimated Size: ~6TB total
+      Chunk Strategy: Time-based chunking (1 time step per chunk)
+    
+    driver: zarr
+    
+    parameters:
+      time_range:
+        description: "Time range for data selection (YYYY-MM-DD format)"
+        type: str
+        default: null
+      variables:
+        description: "List of variables to load (default: all)"
+        type: list
+        default: null
+      pressure_levels:
+        description: "Pressure levels to include [300, 500, 700, 850] hPa"
+        type: list
+        default: [300, 500, 700, 850]
+    
+    args:
+      urlpath: 
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2017_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2018_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2019_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2020_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2021_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2022_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2023_0p25deg_chunk.zarr"
+        - "/home/NAS/homes/cjchen-10025/download/era5/era5_convection_4_2024_0p25deg_chunk.zarr"
+      combine: "by_coords"
+      combine_attrs: "drop_conflicts"
+      consolidated: True
+      
+    metadata:
+      tags: ["era5", "reanalysis", "weather", "climate", "convection", "hourly"]
+      data_type: "gridded"
+      domain: "atmospheric"
+      grid_type: "equiangular_lat_lon"
+      institution: "ECMWF"
+      source: "ERA5 Reanalysis"
+      processing_level: "analysis_ready"
+      coordinate_system: "WGS84"
+      
+      # Data quality and processing information
+      quality_flags:
+        - "regridded_to_regular_grid"
+        - "analysis_ready_format"
+        - "zarr_optimized"
+        - "dask_compatible"
+      
+      # Usage guidelines
+      usage_notes: |
+        - Data is optimized for machine learning and analysis workflows
+        - Use time slicing for memory-efficient loading: ds.sel(time=slice('2020-01-01', '2020-12-31'))
+        - Consider chunking strategy when performing operations across time dimension
+        - Latitude range limited to 60°N-60°S following ARCO ERA5 analysis-ready format
+      
+      limitations:
+        - "Limited to convection-related variables"
+        - "Latitude coverage: 60°N to 60°S only"
+        - "4 pressure levels only (300, 500, 700, 850 hPa)"
+        - "Reanalysis data - not direct observations"
+      
+      # Example usage
+      example_code: |
+        import intake
+        import xarray as xr
+        
+        # Load catalog
+        catalog = intake.open_catalog('dataset_intake.yaml')
+        
+        # Load full dataset
+        ds = catalog.era5_hourly_global.read()
+        
+        # Load subset (recommended for memory efficiency)
+        ds_subset = catalog.era5_hourly_global.read().sel(
+            time=slice('2020-01-01', '2020-12-31'),
+            latitude=slice(50, 30),
+            longitude=slice(0, 30)
+        )
+        
+        # Load specific variables
+        temp_data = ds['temperature'].sel(level=850)  # 850 hPa temperature
