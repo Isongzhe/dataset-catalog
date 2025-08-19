@@ -1,35 +1,17 @@
 [project]
-name = "lab-intake-environment"
-version = "1.0.0"
-description = "Lab shared intake environment for data analysis"
-authors = [
-    {name = "Lab Research Team", email = "r13521602@ntu.edu.tw"}
-]
+name = "dataset-catalog"
+version = "0.1.0"
+description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-
 dependencies = [
+    "compliance-checker>=5.3.0",
     "dask>=2025.7.0",
-    "fsspec>=2025.7.0",
+    "h5netcdf>=1.6.4",
     "intake>=2.0.8",
     "intake-parquet>=0.3.0",
     "intake-xarray>=2.0.0",
-    "jinja2>=3.1.6",
-    "matplotlib>=3.10.5",
-    "s3fs>=2025.7.0",
-    "xarray>=2025.7.1",
-    "xpublish>=0.3.3",
     "zarr<3.0",
-    "netcdf4>=1.6.0",
-    "pandas>=2.0.0",
-    "numpy>=1.24.0",
-    "polars>=1.32.3",
-]
-
-[project.optional-dependencies]
-test = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.0.0",
 ]
 
 [dependency-groups]
