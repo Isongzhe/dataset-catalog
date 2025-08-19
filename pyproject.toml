@@ -5,12 +5,14 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "aiohttp>=3.12.15",
     "compliance-checker>=5.3.0",
     "dask>=2025.7.0",
     "h5netcdf>=1.6.4",
     "intake>=2.0.8",
     "intake-parquet>=0.3.0",
     "intake-xarray>=2.0.0",
+    "requests>=2.32.5",
     "zarr<3.0",
 ]
 
